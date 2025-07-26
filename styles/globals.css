@@ -1,0 +1,26 @@
+@import url(https://fonts.bunny.net/css?family=work-sans:900,800,700,600,500,400,900i,800i,700i,600i,500i);
+@import url(https://fonts.bunny.net/css?family=amatic-sc:400,700|black-han-sans:400);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.gallery::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.gallery {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
