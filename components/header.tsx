@@ -28,7 +28,7 @@ export default function Header() {
       <button
         className="bg-zinc-700 w-full p-2 py-3 hover:text-rose-200 hover:bg-zinc-600 focus:ring-1 ring-rose-200 duration- text-zinc-200 rounded shadow-2xl flex items-center justify-center"
         onClick={() =>
-          window.open("https://coff.ee/priyanshu6ov", "_blank")
+          window.open("https://coff.ee/priyanshu6o", "_blank")
         }
       >
         <SiBuymeacoffee />

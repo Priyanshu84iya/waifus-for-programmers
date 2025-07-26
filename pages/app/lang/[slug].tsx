@@ -71,9 +71,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       )
       .map((file: any) => ({
         name: file.name,
-        url: `https://${
-          process.env.CI_TOKEN
-        }.cloudimg.io/${file.download_url.substring(8)}?force_format=webp`,
+        url: file.download_url,
         key: file.name,
         path: file.path,
         html_url: file.html_url,
