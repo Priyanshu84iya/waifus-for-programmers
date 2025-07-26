@@ -3,6 +3,7 @@ import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -42,6 +43,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <meta name="twitter:image" content="https://i.imgur.com/K1XgIe1.png" />
       </Head>
       <Component {...pageProps} />
+      <Analytics />
     </>
   );
 }
