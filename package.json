@@ -1,12 +1,34 @@
 {
-  "name": "wfp",
-  "version": "0.1.0",
-  "private": true,
+  "name": "waifus-for-programmers",
+  "version": "1.0.0",
+  "description": "A beautiful web gallery showcasing anime girls holding programming books",
+  "author": "Pry Uchiha <https://github.com/Priyanshu84iya>",
+  "license": "MIT",
+  "homepage": "https://github.com/Priyanshu84iya/waifus-for-programmers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Priyanshu84iya/waifus-for-programmers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Priyanshu84iya/waifus-for-programmers/issues"
+  },
+  "keywords": [
+    "anime",
+    "programming",
+    "gallery",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "waifu"
+  ],
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next build && next export"
   },
   "dependencies": {
     "axios": "^0.27.2",
