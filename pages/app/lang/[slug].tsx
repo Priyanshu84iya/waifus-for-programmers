@@ -9,6 +9,7 @@ import SearchBar from "../../../components/searchBar";
 import Header from "../../../components/header";
 import { FiMenu, FiX } from "react-icons/fi";
 import Router from "next/router";
+import Link from "next/link";
 
 type ImgData = {
   name: string;
@@ -32,22 +33,33 @@ export const getStaticPaths: GetStaticPaths = async () => {
         headers: {
           Authorization: `token ${process.env.GH_PAT}`,
         },
+        timeout: 10000, // 10 second timeout
       }
     );
+
+    if (!folders.data || !Array.isArray(folders.data)) {
+      console.log("Invalid API response format for folders");
+      return { paths: [], fallback: false };
+    }
+
     const folderValues = folders.data;
     const paths = folderValues
       .filter(
         (folder: any) =>
-          folder.name !== "README.md" && folder.name !== "CONTRIBUTING.md" && folder.name !== ".DS_Store"
+          folder.type === "dir" && // Only include directories
+          folder.name !== "README.md" && 
+          folder.name !== "CONTRIBUTING.md" && 
+          folder.name !== ".DS_Store"
       )
       .map((folder: any) => ({
         params: { slug: folder.name },
       }));
 
-    return { paths, fallback: false };
+    console.log(`Found ${paths.length} valid folders`);
+    return { paths, fallback: 'blocking' };
   } catch (error) {
     console.error("Error fetching folders:", error);
-    return { paths: [], fallback: false };
+    return { paths: [], fallback: 'blocking' };
   }
 };
 
@@ -61,8 +73,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         headers: {
           Authorization: `token ${process.env.GH_PAT}`,
         },
+        timeout: 10000, // 10 second timeout
       }
     );
+
+    // Check if response data exists and is an array
+    if (!files.data || !Array.isArray(files.data)) {
+      console.log("Invalid API response format for:", params?.slug);
+      return {
+        props: {
+          images: [],
+          slug: params?.slug,
+        },
+      };
+    }
 
     const images = files.data
       .filter(
@@ -78,27 +102,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         download_url: file.download_url,
       }));
 
-    if (images && images.length > 0) {
-      return {
-        props: {
-          images: images,
-          slug: params?.slug,
-        },
-      };
-    }
-
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        images: images,
+        slug: params?.slug,
       },
     };
   } catch (error) {
-    console.error("Error fetching images:", error);
+    console.error("Error fetching images for", params?.slug, ":", error);
+    // Return empty props instead of redirect to avoid prerender issues
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        images: [],
+        slug: params?.slug,
       },
     };
   }
@@ -109,9 +125,11 @@ const Index: NextPageWithLayout = (props: Props) => {
     props?.images ? props?.images : []
   );
   const [isLoading, setIsLoading] = useState(false);
+  
   useEffect(() => {
     setFilteredImages(props?.images ? props?.images : []);
   }, [props?.images]);
+  
   useEffect(() => {
     Router.events.on("routeChangeStart", () => {
       setIsLoading(true);
@@ -123,7 +141,28 @@ const Index: NextPageWithLayout = (props: Props) => {
       setIsLoading(false);
     });
   }, []);
+  
   const [showSideBar, setShowSideBar] = useState<boolean>(false);
+
+  // Add debugging info
+  console.log("Props:", props);
+  console.log("Images count:", props?.images?.length || 0);
+  console.log("Slug:", props?.slug);
+
+  // If no images, show a message
+  if (!props?.images || props?.images?.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-zinc-900 text-white">
+        <div className="text-center">
+          <h2 className="text-2xl mb-4">No images found for &quot;{props?.slug}&quot;</h2>
+          <p className="text-zinc-400">This programming language folder might be empty or there was an error loading the data.</p>
+          <Link href="/" className="text-rose-400 hover:text-rose-300 underline mt-4 inline-block">
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
